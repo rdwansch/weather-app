@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/** FF*/
+input[type='range']::-moz-range-progress {
+  @apply bg-gradient-to-r from-violet-600 to-purple-600;
+}
+
+input[type='range']::-moz-range-thumb {
+  width: 8px;
+  height: 8px;
+  @apply bg-gray-100;
+}
+
+input[type='range']::-moz-range-track {
+  @apply bg-gradient-to-r from-purple-800 to-pink-500;
+}
