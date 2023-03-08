@@ -1,15 +1,8 @@
+import { useAPIHourly } from '~/WeatherData';
 import MobileForecast from '~/components/MobileForecast';
-import useSwr from 'swr';
-
-const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 export default function App() {
-  const { data, isLoading } = useSwr(
-    'https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m&start_date=2023-03-05&end_date=2023-03-07',
-    fetcher
-  );
-
-  console.log(data);
+  const { data, isLoading } = useAPIHourly();
 
   return (
     <>
@@ -45,9 +38,8 @@ export default function App() {
               <h5 className="text-gray-300 font-semibold">Weekly Forecast</h5>
             </div>
             <div className="border border-[rgba(255,255,255,0.2)]"></div>
-            {/* Starts forecast */}
-            <MobileForecast />
-            {/* End forecast */}
+
+            {!isLoading && <MobileForecast data={data} />}
             {/* Air Quality */}
             <div className="bg-[#17143dcb] p-5 border border-violet-900 rounded-2xl mt-5">
               <div>
@@ -56,7 +48,7 @@ export default function App() {
 
               <h3 className="text-white text-2xl font-semibold">3-Low Health Risk</h3>
 
-              <input class=" w-full h-0.5" type="range" value="30" min="0"></input>
+              <input readOnly className=" w-full h-0.5" type="range" value="30" min="0"></input>
               <hr className="my-1 border bg-transparent border-gray-700" />
 
               <div className="flex items-center justify-between">
@@ -95,7 +87,7 @@ export default function App() {
                   </div>
                   <p className="text-4xl text-white">4</p>
                   <p className="text-white text-3xl">Moderate</p>
-                  <input class=" w-full h-0.5" type="range" value="0" min="0"></input>
+                  <input readOnly className=" w-full h-0.5" type="range" value="0" min="0"></input>
                 </div>
               </div>
               <div className="w-2/3 bg-[#17143dcb] p-5 border border-violet-900 rounded-2xl mt-5">
