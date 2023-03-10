@@ -1,5 +1,6 @@
 import { useAPIHourly } from '~/WeatherData';
 import MobileForecast from '~/components/MobileForecast';
+import { getFullDate } from '~/lib/date';
 
 export default function App() {
   const { data, isLoading } = useAPIHourly();
@@ -35,7 +36,7 @@ export default function App() {
               >
                 Hourly Forecast
               </h5>
-              <h5 className="text-gray-300 font-semibold">Weekly Forecast</h5>
+              <h5 className="text-gray-300 font-semibold">{getFullDate(new Date())}</h5>
             </div>
             <div className="border border-[rgba(255,255,255,0.2)]"></div>
 
