@@ -1,10 +1,14 @@
-import { GetHourly } from '~/API/Endpoints';
+import { getHourly, getCurrentWeather } from '~/API/Endpoints';
 import useSwr from 'swr';
 
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 export function useAPIHourly() {
-  const { data, isLoading } = useSwr(GetHourly, fetcher);
+  const { data, isLoading } = useSwr(getHourly, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   let formatedTime;
   let _data;
@@ -23,4 +27,12 @@ export function useAPIHourly() {
   return { data: _data, isLoading };
 }
 
+export function useCurrentWeather() {
+  const { data, isLoading } = useSwr(getCurrentWeather, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
+  return { data, isLoading };
+}

@@ -1,18 +1,26 @@
-import { useAPIHourly } from '~/WeatherData';
+import { useAPIHourly, useCurrentWeather } from '~/WeatherData';
 import MobileForecast from '~/components/MobileForecast';
 import { getFullDate } from '~/lib/date';
 
 export default function App() {
-  const { data, isLoading } = useAPIHourly();
+  const hourlyWeather = useAPIHourly();
+  const currentWeather = useCurrentWeather();
+
+  if (!currentWeather.isLoading) {
+    console.log(currentWeather);
+  }
 
   return (
     <>
-      <div className={`bg-[url(/assets/background-mobile.png)] bg-fixed w-[100vw] min-h-[100vh] bg-cover`}>
+      <div className={`bg-[url(/assets/background-mobile.png)] bg-fixed w-[100vw] min-h-[100vh] bg-cover sm:hidden`}>
         <div className="text-center pt-24">
-          <h1 className="text-3xl text-white  mx-auto">Montreal</h1>
-          <h2 className="text-7xl text-white font-light ">19°</h2>
-          <p className="text-gray-400 font-semibold ">Mostly Clear</p>
-          <p className="text-white font-semibold ">H:24° L:18°</p>
+          <h1 className="text-xl text-white mx-auto">{!currentWeather.isLoading ? currentWeather.data.name : '...'}</h1>
+          <h2 className="text-7xl text-white font-light ">
+            {!currentWeather.isLoading ? currentWeather.data.main.temp : '...'}°
+          </h2>
+          <p className="text-gray-300 font-semibold ">
+            {!currentWeather.isLoading ? currentWeather.data.weather[0].description : '...'}
+          </p>
         </div>
 
         <div className="mx-auto left-0 right-0 w-fit z-10 mt-10 fixed">
@@ -40,7 +48,7 @@ export default function App() {
             </div>
             <div className="border border-[rgba(255,255,255,0.2)]"></div>
 
-            {!isLoading && <MobileForecast data={data} />}
+            {!hourlyWeather.isLoading && <MobileForecast data={hourlyWeather.data} />}
             {/* Air Quality */}
             <div className="bg-[#17143dcb] p-5 border border-violet-900 rounded-2xl mt-5">
               <div>
@@ -74,21 +82,29 @@ export default function App() {
               <div className="w-2/3 bg-[#17143dcb] p-5 border border-violet-900 rounded-2xl mt-5">
                 <div>
                   <div className="flex items-center gap-3">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width={16}
-                      height={16}
-                      fill="currentColor"
-                      className="text-gray-500"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z" />
-                    </svg>
-                    <h3 className="text-gray-400 uppercase font-semibold text-sm">UV Index</h3>
+                    <h3 className="text-gray-400 uppercase font-semibold text-sm">Wind</h3>
                   </div>
-                  <p className="text-4xl text-white">4</p>
-                  <p className="text-white text-3xl">Moderate</p>
-                  <input readOnly className=" w-full h-0.5" type="range" value="0" min="0"></input>
+                  <p className="text-4xl text-white">
+                    {!currentWeather.isLoading ? currentWeather.data.wind.speed : ''}{' '}
+                    <span className="text-xl text-gray-400">m/s</span>
+                  </p>
+                  {!currentWeather.isLoading ? (
+                    <div className="text-white flex mt-5">
+                      <span className="text-gray-500">-----------</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width={40}
+                        height={40}
+                        fill="currentColor"
+                        className={`rotate-[${currentWeather.data.wind.deg}deg] text-white`}
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M12.5 2A2.5 2.5 0 0 0 10 4.5a.5.5 0 0 1-1 0A3.5 3.5 0 1 1 12.5 8H.5a.5.5 0 0 1 0-1h12a2.5 2.5 0 0 0 0-5zm-7 1a1 1 0 0 0-1 1 .5.5 0 0 1-1 0 2 2 0 1 1 2 2h-5a.5.5 0 0 1 0-1h5a1 1 0 0 0 0-2zM0 9.5A.5.5 0 0 1 .5 9h10.042a3 3 0 1 1-3 3 .5.5 0 0 1 1 0 2 2 0 1 0 2-2H.5a.5.5 0 0 1-.5-.5z" />
+                      </svg>
+                    </div>
+                  ) : (
+                    ''
+                  )}
                 </div>
               </div>
               <div className="w-2/3 bg-[#17143dcb] p-5 border border-violet-900 rounded-2xl mt-5">
@@ -107,10 +123,24 @@ export default function App() {
 
                     <h3 className="text-gray-400 uppercase font-semibold text-sm">Sunrise</h3>
                   </div>
-                  <p className="text-white text-4xl">5:28 AM</p>
+                  <p className="text-white text-3xl">5:28</p>
 
                   <hr className="bg-transparent border border-gray-600 my-2" />
-                  <p className="text-white">Sunset: 7:25 PM</p>
+                  <div className="flex gap-3 items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width={16}
+                      height={16}
+                      fill="currentColor"
+                      className="text-gray-400"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M7.646 4.854a.5.5 0 0 0 .708 0l1.5-1.5a.5.5 0 0 0-.708-.708l-.646.647V1.5a.5.5 0 0 0-1 0v1.793l-.646-.647a.5.5 0 1 0-.708.708l1.5 1.5zm-5.303-.51a.5.5 0 0 1 .707 0l1.414 1.413a.5.5 0 0 1-.707.707L2.343 5.05a.5.5 0 0 1 0-.707zm11.314 0a.5.5 0 0 1 0 .706l-1.414 1.414a.5.5 0 1 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zM8 7a3 3 0 0 1 2.599 4.5H5.4A3 3 0 0 1 8 7zm3.71 4.5a4 4 0 1 0-7.418 0H.499a.5.5 0 0 0 0 1h15a.5.5 0 0 0 0-1h-3.79zM0 10a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2A.5.5 0 0 1 0 10zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z" />
+                    </svg>
+                    <h3 className="text-gray-400 uppercase font-semibold text-sm">
+                      Sunset <span className="text-white">17:53</span>
+                    </h3>
+                  </div>
                 </div>
               </div>
             </div>

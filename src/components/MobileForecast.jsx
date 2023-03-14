@@ -7,8 +7,6 @@ export default function MobileForecast({ data }) {
 
   const currentHours = new Date().getHours();
 
-  console.log(data.hourly.weathercode);
-
   useEffect(() => {
     ref.current.scrollTo(currentHours * 60, 0);
   }, []);

@@ -3,7 +3,7 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 export const getFullDate = (date, format) => {
   const now = new Date(date);
 
-  const _date = now.getDate() > 10 || '0' + now.getDate();
+  const _date = now.getDate() > 10 ? now.getDate() : '0' + now.getDate();
   const _month = months[now.getMonth()];
 
   if (format == 'API') {
